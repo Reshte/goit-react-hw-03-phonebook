@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 
 
 const shortid = require('shortid');
+const LS_KEY = 'contact_info';
+
 
 export class App extends Component {
   state = {
@@ -15,7 +17,38 @@ export class App extends Component {
     {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
     {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},],
     filter: '',
+  }
+
+  static propTypes = {
+      contacts: PropTypes.arrayOf(
+                PropTypes.shape({
+                id: PropTypes.string,
+                name: PropTypes.string,
+                number: PropTypes.string,
+    })
+  ),
+  filter: PropTypes.string,
+  handelFormSbmit: PropTypes.func,
+  deleteContact: PropTypes.func,
+  filterContact: PropTypes.func,
+    };
+  
+  componentDidMount() {
+    try {
+      const contacts = JSON.parse(localStorage.getItem(LS_KEY));
+      this.setState({contacts})
+    
+  } catch(error) {
+    this.setState({ contacts: [] });
+  }
+  }
+  
+  componentDidUpdate(_, prevState) {
+      if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem(LS_KEY,JSON.stringify(this.state.contacts))
     }
+       }
+  
   
   handelFormSbmit = ({ name, number }) => {
     const isNameInContacts = this.state.contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase().trim())
@@ -50,17 +83,3 @@ export class App extends Component {
   )    
   }
 }
-
-App.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      number: PropTypes.string,
-    })
-  ),
-  filter: PropTypes.string,
-  handelFormSbmit: PropTypes.func,
-  deleteContact: PropTypes.func,
-  filterContact: PropTypes.func,
-};

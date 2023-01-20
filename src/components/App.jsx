@@ -34,13 +34,17 @@ export class App extends Component {
     };
   
   componentDidMount() {
-    try {
+    const savedState = localStorage.getItem(LS_KEY);
+    if (savedState) {
+        try {
       const contacts = JSON.parse(localStorage.getItem(LS_KEY));
       this.setState({contacts})
     
   } catch(error) {
     this.setState({ contacts: [] });
   }
+    }
+  
   }
   
   componentDidUpdate(_, prevState) {
@@ -60,6 +64,7 @@ export class App extends Component {
    }
  
   filterContact = (e) => {
+    console.log(e)
         this.setState({filter: e.currentTarget.value})
       }
    
